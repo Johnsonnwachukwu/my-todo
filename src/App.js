@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import React, { useState, useEffect } from 'react';
+import CardList from './Components/CardList';
+import SearchBox from './Components/SearchBox';
+import './index.css'; 
+
+const App = () => {
+  const [robots, setRobots] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(users => setRobots(users));
+  }, []);
+
+  const onSearchChange = event => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredRobots = robots.filter(robot =>
+    robot.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="text-center">
+      <h1 className="text-4xl text-gray-500 font-bold my-8">Robo Friends</h1>
+      <SearchBox searchChange={onSearchChange} />
+      <CardList robots={filteredRobots} />
     </div>
   );
-}
+};
 
 export default App;
